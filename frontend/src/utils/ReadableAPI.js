@@ -31,3 +31,34 @@ export const getComments = parentId =>
         error => console.log('There is an error in getComments()', error)
     );
 
+export const addToPosts = obj =>
+    fetch(`${api}/posts`, {
+        method: `POST`,
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body:JSON.stringify(obj)
+    }).then(res => res.json());
+
+export const getSinglePost = postId =>
+    fetch(`${api}/posts/` + postId, { headers }).then(
+        res => res.json(),
+        error => console.log('An error occurred in getSinglePost', error)
+    );
+
+export const addToComments = obj =>
+    fetch(`$(api)/comments`, {
+        method: `POST`,
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(obj)
+    }).then(res => res.json());
+
+export const getSingleComment = postId =>
+    fetch(`${api}/comments/` + postId, { headers }).then(
+        res => res.json(),
+        error => console.log("An error occurred in getSingleComment", error)
+    );

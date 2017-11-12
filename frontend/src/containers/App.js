@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router';
 import { VisiblePosts } from './VisiblePosts'
+import { CreatePostFormDetails } from './CreatePostFormDetails'
 import logo from '../logo.svg';
 import '../App.css';
 
@@ -46,6 +47,8 @@ class App extends Component {
                 </div>
                 <Switch>
                     <Route exact path="/" render={() => <VisiblePosts/>}/>
+
+                    <Route exact path="/create" render={() => <CreatePostFormDetails />} />
                 </Switch>
             </div>
         );

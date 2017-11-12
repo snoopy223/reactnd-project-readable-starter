@@ -1,14 +1,22 @@
 import {
     getCategories,
     getPosts,
-    getComments
+    getComments,
+    addToPosts,
+    getSinglePost,
+    addToComments,
+    getSingleComment
 } from "../utils/ReadableAPI";
+
+import generateUUID from '../utils/generateID';
 
 export const GET_CATEGORIES = 'GET_CATEGORIES';
 export const ADD_POST = "ADD_POST";
 export const EDIT_POST = "EDIT_POST";
 export const DELETE_POST = "DELETE_POST";
 export const RECEIVE_ALL_COMMENTS = "RECEIVE_ALL_COMMENTS";
+export const INSERT_POST = "INSERT_POST";
+export const INSERT_COMMENT = "INSERT_COMMENT";
 
 export const sortingTypes = {
     MOST_RECENT: 'MOST_RECENT',
@@ -61,10 +69,49 @@ export function retrieveCategories (data) {
     }
 }
 
-export function addPost ({ id, timestamp, title, body, author, category, voteScore, deleted}) {
+export function addPostToServer (post) {
+    return function(dispatch){
+        const id = generateUUID();
+        const timestamp = Date.now();
+        return addToPosts({ ...post, id, timestamp}).then(() =>
+          getSinglePost(id).then(data => dispatch(insertPost(data)))
+        )
+    }
+}
+
+export function insertPost(data) {
+    const postId = data.id;
+    const post = data;
     return {
-        type: ADD_POST,
-        id, author, timestamp, title, body, category, voteScore, deleted,
+        type: INSERT_POST,
+        postId,
+        post
+    };
+}
+
+export function insertComment(data) {
+    const parentId = data.parentId;
+    const commentId = data.id;
+    const comment = data;
+    return {
+        type: INSERT_COMMENT,
+        parentId,
+        commentId,
+        comment
+    }
+}
+
+export function addCommentToServer(comment) {
+    return  dispatch => {
+        const id = generateUUID();
+        const timestamp = Date.now();
+        return addToComments({
+            ...comment,
+            id,
+            timestamp
+        }).then(() =>
+            getSingleComment(id).then(data => dispatch(insertComment(data)))
+        )
     }
 }
 
