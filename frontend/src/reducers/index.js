@@ -1,7 +1,22 @@
-import { ADD_POST, DELETE_POST, EDIT_POST, GET_CATEGORIES} from "../actions/index";
+import {
+    sortingTypes,
+    ADD_POST,
+    DELETE_POST,
+    EDIT_POST,
+    GET_CATEGORIES,
+    RECEIVE_ALL_COMMENTS,
+    INSERT_POST,
+    INSERT_COMMENT,
+    CHANGE_SORTING_ORDER
+} from "../actions/index";
 
 const initiaState = {
     categories: [],
+    sortOrder: sortingTypes.MOST_RECENT,
+    posts: {},
+    comments: {},
+    allPosts: [],
+    postsByCategory: {}
 };
 
 //Set category
@@ -13,15 +28,54 @@ function categories (state = [], action) {
     }
 }
 
-function posts (state, action)  {
-    const { id, timestamp, title, body, author, category, voteScore, deleted } = action;
+//Sort posts
+function sortOrder(state = initiaState.sortOrder, action) {
     switch (action.type) {
-        case ADD_POST:
-            return {};
-        case DELETE_POST:
-            return {};
-        case EDIT_POST:
-            return {};
+        case CHANGE_SORTING_ORDER:
+            return action.sortOrder;
+        default:
+            return state;
+    }
+}
+
+//Posts reducer
+function posts (state = initiaState.posts, action)  {
+    const { parentId, postId, post } = action;
+    switch (action.type) {
+        case RECEIVE_ALL_POSTS:
+            const posts = action.dataObj;
+            return {
+                ...posts
+            };
+
+        case RECEIVE_ALL_COMMENTS:
+            const comments = action.dataArray;
+            return {
+                ...state,
+                [parentId]: {
+                    ...state[parentId],
+                    comments: [...comments]
+                }
+            };
+
+        case INSERT_POST:
+            return {
+                ...state,
+                [postId]: {
+                    ...post,
+                    comments: []
+                }
+            };
+
+        case INSERT_COMMENT:
+            return {
+                ...state,
+                [parentId]: {
+                    ...state[parentId],
+                    comments: [...state[parentId].comments, action.commentId]
+                }
+            };
+
         default:
             return state;
     }

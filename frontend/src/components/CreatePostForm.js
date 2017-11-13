@@ -23,7 +23,7 @@ class CreatePostForm extends Component {
                 <div>
                     <h2>Add a post</h2>
                     <div>
-                        <PostForm onSubmit={this.submitPost()} />
+                        <PostForm onSubmit={this.submitPost} />
                     </div>
                 </div>
             </div>
